@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
-use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
@@ -66,30 +65,5 @@ class AuthController extends Controller
         );
     }
 
-    /**
-     * Get current authenticated user.
-     */
-    public function currentUser(Request $request): JsonResponse
-    {
-        return ApiResponse::success(
-            200,
-            __('messages.user_retrieved'),
-            [
-                'user' => new UserResource($request->user()),
-            ]
-        );
-    }
 
-    /**
-     * Change password.
-     */
-    public function changePassword(ChangePasswordRequest $request): JsonResponse
-    {
-        $this->authService->changePassword($request->user(), $request->validated('new_password'));
-
-        return ApiResponse::success(
-            200,
-            __('messages.password_changed')
-        );
-    }
 }
