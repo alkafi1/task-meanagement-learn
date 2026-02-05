@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
@@ -26,14 +27,13 @@ class AuthController extends Controller
     {
         $result = $this->authService->register($request->validated());
 
-        return response()->json([
-            'success' => true,
-            'message' => __('messages.register_success'),
-            'data' => [
+        return ApiResponse::created(
+            __('messages.register_success'),
+            [
                 'user' => new UserResource($result['user']),
                 'token' => $result['token'],
-            ],
-        ], 201);
+            ]
+        );
     }
 
     /**
@@ -43,14 +43,14 @@ class AuthController extends Controller
     {
         $result = $this->authService->login($request->validated());
 
-        return response()->json([
-            'success' => true,
-            'message' => __('messages.login_success'),
-            'data' => [
+        return ApiResponse::success(
+            200,
+            __('messages.login_success'),
+            [
                 'user' => new UserResource($result['user']),
                 'token' => $result['token'],
-            ],
-        ]);
+            ]
+        );
     }
 
     /**
@@ -60,11 +60,10 @@ class AuthController extends Controller
     {
         $this->authService->logout($request->user());
 
-        return response()->json([
-            'success' => true,
-            'message' => __('messages.logout_success'),
-            'data' => [],
-        ]);
+        return ApiResponse::success(
+            200,
+            __('messages.logout_success')
+        );
     }
 
     /**
@@ -72,13 +71,13 @@ class AuthController extends Controller
      */
     public function currentUser(Request $request): JsonResponse
     {
-        return response()->json([
-            'success' => true,
-            'message' => __('messages.user_retrieved'),
-            'data' => [
+        return ApiResponse::success(
+            200,
+            __('messages.user_retrieved'),
+            [
                 'user' => new UserResource($request->user()),
-            ],
-        ]);
+            ]
+        );
     }
 
     /**
@@ -88,10 +87,9 @@ class AuthController extends Controller
     {
         $this->authService->changePassword($request->user(), $request->validated('new_password'));
 
-        return response()->json([
-            'success' => true,
-            'message' => __('messages.password_changed'),
-            'data' => [],
-        ]);
+        return ApiResponse::success(
+            200,
+            __('messages.password_changed')
+        );
     }
 }
