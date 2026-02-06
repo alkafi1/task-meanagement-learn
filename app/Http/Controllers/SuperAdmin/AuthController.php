@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\SuperAdmin;
 
 use App\Helpers\ApiResponse;
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
-use App\Http\Resources\UserResource;
-use App\Services\AuthService;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\SuperAdmin\LoginRequest;
+use App\Services\SuperAdmin\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -20,23 +19,10 @@ class AuthController extends Controller
     }
 
     /**
-     * Register a new user.
-     */
-    public function register(RegisterRequest $request): JsonResponse
-    {
-        $result = $this->authService->register($request->validated());
-
-        return ApiResponse::created(
-            __('messages.register_success'),
-            [
-                'user' => new UserResource($result['user']),
-                'token' => $result['token'],
-            ]
-        );
-    }
-
-    /**
-     * Login user.
+     * Handle super admin login.
+     *
+     * @param LoginRequest $request
+     * @return JsonResponse
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -46,14 +32,17 @@ class AuthController extends Controller
             200,
             __('messages.login_success'),
             [
-                'user' => new UserResource($result['user']),
+                'super_admin' => $result['super_admin'],
                 'token' => $result['token'],
             ]
         );
     }
 
     /**
-     * Logout user.
+     * Handle super admin logout.
+     *
+     * @param Request $request
+     * @return JsonResponse
      */
     public function logout(Request $request): JsonResponse
     {
@@ -64,6 +53,4 @@ class AuthController extends Controller
             __('messages.logout_success')
         );
     }
-
-
 }

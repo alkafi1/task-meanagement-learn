@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\SuperAdmin;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class TeamResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,10 +17,7 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'email' => $this->email,
-            'avatar' => $this->avatar,
-            'roles' => $this->relationLoaded('roles') ? $this->getRoleNames() : [],
-            'permissions' => $this->relationLoaded('permissions') ? $this->getAllPermissions()->pluck('name') : [],
+            'owner_id' => $this->owner_id ?? null,
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),
         ];

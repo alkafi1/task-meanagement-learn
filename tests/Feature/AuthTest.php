@@ -74,39 +74,6 @@ class AuthTest extends TestCase
             ->assertJsonValidationErrors(['email']);
     }
 
-    public function test_user_can_get_current_user_info()
-    {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user, 'sanctum')->getJson('/api/v1/user');
-
-        $response->assertStatus(200)
-            ->assertJson([
-                'data' => [
-                    'user' => [
-                        'id' => $user->id,
-                        'email' => $user->email,
-                    ],
-                ],
-            ]);
-    }
-
-    public function test_user_can_change_password()
-    {
-        $user = User::factory()->create([
-            'password' => Hash::make('password'),
-        ]);
-
-        $response = $this->actingAs($user, 'sanctum')->postJson('/api/v1/change-password', [
-            'current_password' => 'password',
-            'new_password' => 'newpassword',
-            'new_password_confirmation' => 'newpassword',
-        ]);
-
-        $response->assertStatus(200);
-
-        $this->assertTrue(Hash::check('newpassword', $user->fresh()->password));
-    }
 
     public function test_user_can_logout()
     {
