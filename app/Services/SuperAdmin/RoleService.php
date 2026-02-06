@@ -9,7 +9,8 @@ class RoleService
 {
     public function getAllRoles(?int $teamId = null): Collection
     {
-        return Role::where('guard_name', 'super_admin')
+        $guardName = $teamId ? 'team' : 'super_admin';
+        return Role::where('guard_name', $guardName)
             ->where('team_id', $teamId)
             ->with('permissions')
             ->get();
@@ -17,9 +18,10 @@ class RoleService
 
     public function createRole(array $data): Role
     {
+        $guardName = isset($data['team_id']) ? 'team' : 'super_admin';
         $role = Role::create([
             'name' => $data['name'],
-            'guard_name' => 'super_admin',
+            'guard_name' => $guardName,
             'team_id' => $data['team_id'] ?? null,
         ]);
 

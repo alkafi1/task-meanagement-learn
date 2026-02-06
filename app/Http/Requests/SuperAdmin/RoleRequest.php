@@ -22,7 +22,8 @@ class RoleRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('roles')->ignore($roleId)->where(function ($query) {
-                    return $query->where('guard_name', 'super_admin')
+                    $guardName = $this->team_id ? 'team' : 'super_admin';
+                    return $query->where('guard_name', $guardName)
                         ->where('team_id', $this->team_id);
                 }),
             ],
