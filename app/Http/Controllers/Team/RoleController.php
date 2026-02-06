@@ -22,12 +22,8 @@ class RoleController extends Controller
 
     public function index(): JsonResponse
     {
-        $user = auth()->user();
-        if (!$user->team_id) {
-            return ApiResponse::error(403, 'User is not associated with any team.');
-        }
-
-        $roles = $this->roleService->getTeamRoles($user->team_id);
+        $team = current_team();
+        $roles = $this->roleService->getTeamRoles($team->id);
         return ApiResponse::success(200, __('messages.user_retrieved'), RoleResource::collection($roles));
     }
 
@@ -46,8 +42,8 @@ class RoleController extends Controller
 
     public function show(Role $role): JsonResponse
     {
-        $user = auth()->user();
-        if ($role->team_id !== $user->team_id) {
+        $team = current_team();
+        if ($role->team_id !== $team->id) {
             return ApiResponse::error(403, 'This role does not belong to your team.');
         }
 
@@ -63,7 +59,7 @@ class RoleController extends Controller
             return ApiResponse::error(403, 'Only team owners can update roles.');
         }
 
-        if ($role->team_id !== $user->team_id) {
+        if ($role->team_id !== $team->id) {
             return ApiResponse::error(403, 'This role does not belong to your team.');
         }
 
@@ -80,7 +76,7 @@ class RoleController extends Controller
             return ApiResponse::error(403, 'Only team owners can delete roles.');
         }
 
-        if ($role->team_id !== $user->team_id) {
+        if ($role->team_id !== $team->id) {
             return ApiResponse::error(403, 'This role does not belong to your team.');
         }
 

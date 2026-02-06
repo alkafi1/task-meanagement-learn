@@ -22,12 +22,8 @@ class MemberController extends Controller
 
     public function index(): JsonResponse
     {
-        $user = auth()->user();
-        if (!$user->team_id) {
-            return ApiResponse::error(403, 'User is not associated with any team.');
-        }
-
-        $members = $this->memberService->getTeamMembers($user->team_id);
+        $team = current_team();
+        $members = $this->memberService->getTeamMembers($team->id);
         return ApiResponse::success(200, __('messages.user_retrieved'), UserResource::collection($members));
     }
 
