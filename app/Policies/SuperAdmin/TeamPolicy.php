@@ -15,7 +15,7 @@ class TeamPolicy
      */
     public function viewAny(SuperAdminUser $superAdmin)
     {
-        return true;
+        return $superAdmin->hasPermissionTo('list teams', 'super_admin');
     }
 
     /**
@@ -23,7 +23,7 @@ class TeamPolicy
      */
     public function view(SuperAdminUser $superAdmin, Team $team)
     {
-        return true;
+        return $superAdmin->hasPermissionTo('show team', 'super_admin');
     }
 
     /**
@@ -31,7 +31,7 @@ class TeamPolicy
      */
     public function create(SuperAdminUser $superAdmin)
     {
-        return true;
+        return $superAdmin->hasPermissionTo('create team', 'super_admin');
     }
 
     /**
@@ -39,7 +39,7 @@ class TeamPolicy
      */
     public function update(SuperAdminUser $superAdmin, Team $team)
     {
-        return true;
+        return $superAdmin->hasPermissionTo('update team', 'super_admin');
     }
 
     /**
@@ -47,6 +47,6 @@ class TeamPolicy
      */
     public function delete(SuperAdminUser $superAdmin, Team $team)
     {
-        return $superAdmin->role === 'super_admin';
+        return $superAdmin->hasPermissionTo('delete team', 'super_admin');
     }
 }

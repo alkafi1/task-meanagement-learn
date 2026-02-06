@@ -15,15 +15,15 @@ class UserPolicy
      */
     public function viewAny(SuperAdminUser $superAdmin)
     {
-        return true; // Any super admin can view all users
+        return $superAdmin->hasPermissionTo('list users', 'super_admin');
     }
 
     /**
      * Determine whether the super admin can view the user.
      */
-    public function view(SuperAdminUser $superAdmin, User $user)
+    public function view(SuperAdminUser $superAdmin, SuperAdminUser $user)
     {
-        return true;
+        return $superAdmin->hasPermissionTo('show user', 'super_admin');
     }
 
     /**
@@ -31,22 +31,22 @@ class UserPolicy
      */
     public function create(SuperAdminUser $superAdmin)
     {
-        return true;
+        return $superAdmin->hasPermissionTo('create user', 'super_admin');
     }
 
     /**
      * Determine whether the super admin can update the user.
      */
-    public function update(SuperAdminUser $superAdmin, User $user)
+    public function update(SuperAdminUser $superAdmin, SuperAdminUser $user)
     {
-        return true;
+        return $superAdmin->hasPermissionTo('update user', 'super_admin');
     }
 
     /**
      * Determine whether the super admin can delete the user.
      */
-    public function delete(SuperAdminUser $superAdmin, User $user)
+    public function delete(SuperAdminUser $superAdmin, SuperAdminUser $user)
     {
-        return $superAdmin->role === 'super_admin'; // Only super_admin role can delete
+        return $superAdmin->hasPermissionTo('delete user', 'super_admin');
     }
 }

@@ -32,6 +32,8 @@ class UserRequest extends FormRequest
                 Rule::unique('super_admin_users')->ignore($userId),
             ],
             'password' => $this->isMethod('POST') ? ['required', 'string', 'min:8'] : ['nullable', 'string', 'min:8'],
+            'roles' => ['required', 'array'],
+            'roles.*' => ['string', Rule::in(['super-admin', 'admin'])],
         ];
     }
 }

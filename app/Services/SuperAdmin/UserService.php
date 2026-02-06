@@ -3,7 +3,6 @@
 namespace App\Services\SuperAdmin;
 
 use App\Models\SuperAdminUser;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Hash;
 
@@ -23,15 +22,21 @@ class UserService
      * Create a new user.
      *
      * @param array $data
-     * @return User
+     * @return SuperAdminUser
      */
-    public function createUser(array $data): User
+    public function createUser(array $data): SuperAdminUser
     {
-        return SuperAdminUser::create([
+        $user = SuperAdminUser::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+
+        if (isset($data['roles'])) {
+            $user->assignRole($data['roles']);
+        }
+
+        return $user;
     }
 
     /**
@@ -48,6 +53,10 @@ class UserService
         }
 
         $user->update($data);
+
+        if (isset($data['roles'])) {
+            $user->syncRoles($data['roles']);
+        }
 
         return $user->fresh();
     }

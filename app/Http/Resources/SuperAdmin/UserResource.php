@@ -14,12 +14,25 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $permissionConfig = config('permissions.codes', []);
+
+        $permissions = $this->getAllPermissions()->pluck('name')->map(function ($name) use ($permissionConfig) {
+            return $permissionConfig[$name]['code'] ?? $name;
+        });
+
+        // If super-admin, they might have specific codes or all codes
+        if ($this->hasRole('super-admin', 'super_admin')) {
+             $permissions = array_column($permissionConfig, 'code');
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
             'avatar' => $this->avatar ?? null,
-            'role' => $this->role ?? 'user',
+            'role' => $this->role ?? 'user', // Legacy field
+            'roles' => $this->getRoleNames(),
+            'permissions' => $permissions,
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),
         ];

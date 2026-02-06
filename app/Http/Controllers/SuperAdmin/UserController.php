@@ -17,7 +17,7 @@ class UserController extends Controller
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
-        // $this->authorizeResource(User::class, 'user');
+        $this->authorizeResource(SuperAdminUser::class, 'user');
     }
 
     /**
@@ -74,6 +74,14 @@ class UserController extends Controller
     {
         $this->userService->deleteUser($user);
 
-        return ApiResponse::success(200, __('messages.logout_success')); // Using logout_success as a placeholder for deletion if needed
+        return ApiResponse::success(200, __('messages.logout_success'));
+    }
+
+    /**
+     * Get available roles for super admin users.
+     */
+    public function roles(): JsonResponse
+    {
+        return ApiResponse::success(200, __('messages.user_retrieved'), ['super-admin', 'admin']);
     }
 }
