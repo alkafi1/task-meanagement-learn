@@ -7,6 +7,8 @@ use App\Http\Controllers\SuperAdmin\UserController as SuperAdminUserController;
 use App\Http\Controllers\SuperAdmin\TeamController as SuperAdminTeamController;
 use App\Http\Controllers\SuperAdmin\RoleController as SuperAdminRoleController;
 use App\Http\Controllers\Team\AuthController as TeamAuthController;
+use App\Http\Controllers\Team\RoleController as TeamRoleController;
+use App\Http\Controllers\Team\MemberController as TeamMemberController;
 use App\Http\Middleware\SuperAdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -51,6 +53,11 @@ Route::prefix('v1')->group(function () {
         Route::middleware('auth:sanctum')->group(function () {
             Route::get('/permissions', [TeamAuthController::class, 'permissions'])->name('permissions');
             Route::post('/logout', [TeamAuthController::class, 'logout'])->name('logout');
+
+            // Team Management (Role & Member)
+            Route::get('roles/permissions', [TeamRoleController::class, 'permissions']);
+            Route::apiResource('roles', TeamRoleController::class);
+            Route::apiResource('members', TeamMemberController::class)->except(['update', 'show']);
         });
     });
 

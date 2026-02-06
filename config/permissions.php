@@ -119,6 +119,28 @@ return [
             'code' => 7003,
             'route' => 'team.members.remove',
         ],
+
+        // Team Roles
+        'list team roles' => [
+            'code' => 8001,
+            'route' => 'team.roles.index',
+        ],
+        'create team role' => [
+            'code' => 8002,
+            'route' => 'team.roles.store',
+        ],
+        'update team role' => [
+            'code' => 8003,
+            'route' => 'team.roles.update',
+        ],
+        'delete team role' => [
+            'code' => 8004,
+            'route' => 'team.roles.destroy',
+        ],
+        'view team permissions' => [
+            'code' => 8005,
+            'route' => 'team.roles.permissions',
+        ],
     ],
 
     'guards' => [
@@ -147,12 +169,14 @@ return [
                 'view dashboard', 'manage team',
                 'list tasks', 'show task', 'create task', 'update task', 'delete task',
                 'list members', 'invite member', 'remove member',
+                'list team roles', 'create team role', 'update team role', 'delete team role', 'view team permissions',
             ],
             'roles' => [
                 'team-admin' => [
                     'view dashboard', 'manage team',
                     'list tasks', 'show task', 'create task', 'update task', 'delete task',
                     'list members', 'invite member', 'remove member',
+                    'list team roles', 'create team role', 'update team role', 'delete team role', 'view team permissions',
                 ],
                 'team-member' => [
                     'view dashboard',
