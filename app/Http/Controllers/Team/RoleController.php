@@ -22,45 +22,33 @@ class RoleController extends Controller
 
     public function index(): JsonResponse
     {
-        $team = current_team();
-        $roles = $this->roleService->getTeamRoles($team->id);
+        $roles = $this->roleService->getTeamRoles();
         return ApiResponse::success(200, __('messages.user_retrieved'), RoleResource::collection($roles));
     }
 
     public function store(RoleRequest $request): JsonResponse
     {
-        $user = auth()->user();
         $team = current_team();
 
-        if (!$team || $team->owner_id !== $user->id) {
+        if (!$team || $team->owner_id !== auth()->id()) {
             return ApiResponse::error(403, 'Only team owners can create roles.');
         }
 
-        $role = $this->roleService->createTeamRole($user->team_id, $request->validated());
+        $role = $this->roleService->createTeamRole($request->validated());
         return ApiResponse::success(201, 'Role created successfully', new RoleResource($role));
     }
 
     public function show(Role $role): JsonResponse
     {
-        $team = current_team();
-        if ($role->team_id !== $team->id) {
-            return ApiResponse::error(403, 'This role does not belong to your team.');
-        }
-
         return ApiResponse::success(200, __('messages.user_retrieved'), new RoleResource($role->load('permissions')));
     }
 
     public function update(RoleRequest $request, Role $role): JsonResponse
     {
-        $user = auth()->user();
         $team = current_team();
 
-        if (!$team || $team->owner_id !== $user->id) {
+        if (!$team || $team->owner_id !== auth()->id()) {
             return ApiResponse::error(403, 'Only team owners can update roles.');
-        }
-
-        if ($role->team_id !== $team->id) {
-            return ApiResponse::error(403, 'This role does not belong to your team.');
         }
 
         $updatedRole = $this->roleService->updateTeamRole($role, $request->validated());
@@ -69,15 +57,10 @@ class RoleController extends Controller
 
     public function destroy(Role $role): JsonResponse
     {
-        $user = auth()->user();
         $team = current_team();
 
-        if (!$team || $team->owner_id !== $user->id) {
+        if (!$team || $team->owner_id !== auth()->id()) {
             return ApiResponse::error(403, 'Only team owners can delete roles.');
-        }
-
-        if ($role->team_id !== $team->id) {
-            return ApiResponse::error(403, 'This role does not belong to your team.');
         }
 
         try {

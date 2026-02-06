@@ -9,23 +9,20 @@ use Illuminate\Support\Facades\DB;
 
 class MemberService
 {
-    public function getTeamMembers(int $teamId)
+    public function getTeamMembers()
     {
-        return User::where('team_id', $teamId)->get();
+        return User::all();
     }
 
-    public function addMember(Team $team, array $data): User
+    public function addMember(array $data): User
     {
-        return DB::transaction(function () use ($team, $data) {
+        return DB::transaction(function () use ($data) {
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
-                'team_id' => $team->id,
             ]);
 
-            // Set team context for Spatie
-            setPermissionsTeamId($team->id);
             $user->assignRole($data['role']);
 
             return $user;
@@ -36,10 +33,6 @@ class MemberService
     {
         if ($team->owner_id === $user->id) {
             throw new \Exception('Cannot remove the team owner.');
-        }
-
-        if ($user->team_id !== $team->id) {
-            throw new \Exception('User does not belong to this team.');
         }
 
         // We could either delete the user or just unset the team_id

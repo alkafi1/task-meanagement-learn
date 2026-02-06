@@ -6,7 +6,7 @@ use App\Models\Team;
 use App\Models\User;
 use App\Models\SuperAdminUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 

@@ -2,25 +2,23 @@
 
 namespace App\Services\Team;
 
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Collection;
 
 class RoleService
 {
-    public function getTeamRoles(int $teamId): Collection
+    public function getTeamRoles(): Collection
     {
         return Role::where('guard_name', 'team')
-            ->where('team_id', $teamId)
             ->with('permissions')
             ->get();
     }
 
-    public function createTeamRole(int $teamId, array $data): Role
+    public function createTeamRole(array $data): Role
     {
         $role = Role::create([
             'name' => $data['name'],
             'guard_name' => 'team',
-            'team_id' => $teamId,
         ]);
 
         if (!empty($data['permissions'])) {

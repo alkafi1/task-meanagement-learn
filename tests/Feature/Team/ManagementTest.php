@@ -5,7 +5,7 @@ namespace Tests\Feature\Team;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
@@ -30,6 +30,7 @@ class ManagementTest extends TestCase
             'owner_id' => $this->owner->id,
         ]);
         $this->owner->update(['team_id' => $this->team->id]);
+        $this->owner->refresh();
 
         // Create team-guarded permissions
         Permission::create(['name' => 'view dashboard', 'guard_name' => 'team']);

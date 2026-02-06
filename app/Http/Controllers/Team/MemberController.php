@@ -29,23 +29,21 @@ class MemberController extends Controller
 
     public function store(MemberRequest $request): JsonResponse
     {
-        $user = auth()->user();
         $team = current_team();
 
-        if (!$team || $team->owner_id !== $user->id) {
+        if (!$team || $team->owner_id !== auth()->id()) {
             return ApiResponse::error(403, 'Only team owners can add members.');
         }
 
-        $member = $this->memberService->addMember($team, $request->validated());
+        $member = $this->memberService->addMember($request->validated());
         return ApiResponse::success(201, 'Member added successfully', new UserResource($member));
     }
 
     public function destroy(User $member): JsonResponse
     {
-        $authUser = auth()->user();
         $team = current_team();
 
-        if (!$team || $team->owner_id !== $authUser->id) {
+        if (!$team || $team->owner_id !== auth()->id()) {
             return ApiResponse::error(403, 'Only team owners can remove members.');
         }
 
