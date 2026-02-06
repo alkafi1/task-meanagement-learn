@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Admin;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -25,7 +25,7 @@ class UserControllerTest extends TestCase
         ]);
 
         // Act as authenticated user and get profile
-        $response = $this->actingAs($user, 'sanctum')->getJson('/api/v1/user');
+        $response = $this->actingAs($user, 'sanctum')->getJson('/api/v1/admin/user');
 
         // Assert response structure and data
         $response->assertStatus(200)
@@ -62,7 +62,7 @@ class UserControllerTest extends TestCase
      */
     public function test_unauthenticated_user_cannot_get_profile()
     {
-        $response = $this->getJson('/api/v1/user');
+        $response = $this->getJson('/api/v1/admin/user');
 
         $response->assertStatus(401);
     }
@@ -77,7 +77,7 @@ class UserControllerTest extends TestCase
             'email' => 'old@example.com',
         ]);
 
-        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/user', [
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/admin/user', [
             'name' => 'New Name',
             'email' => 'new@example.com',
         ]);
@@ -113,7 +113,7 @@ class UserControllerTest extends TestCase
 
         $avatar = UploadedFile::fake()->image('avatar.jpg', 100, 100);
 
-        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/user', [
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/admin/user', [
             'name' => $user->name,
             'email' => $user->email,
             'avatar' => $avatar,
@@ -147,7 +147,7 @@ class UserControllerTest extends TestCase
 
         $newAvatar = UploadedFile::fake()->image('new-avatar.jpg');
 
-        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/user', [
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/admin/user', [
             'name' => $user->name,
             'email' => $user->email,
             'avatar' => $newAvatar,
@@ -170,7 +170,7 @@ class UserControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/user', [
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/admin/user', [
             'email' => 'test@example.com',
         ]);
 
@@ -185,7 +185,7 @@ class UserControllerTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/user', [
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/admin/user', [
             'name' => 'Test Name',
         ]);
 
@@ -202,7 +202,7 @@ class UserControllerTest extends TestCase
         $user2 = User::factory()->create(['email' => 'user2@example.com']);
 
         // User2 trying to use User1's email should fail
-        $response = $this->actingAs($user2, 'sanctum')->putJson('/api/v1/user', [
+        $response = $this->actingAs($user2, 'sanctum')->putJson('/api/v1/admin/user', [
             'name' => 'User 2',
             'email' => 'user1@example.com',
         ]);
@@ -211,7 +211,7 @@ class UserControllerTest extends TestCase
             ->assertJsonValidationErrors(['email']);
 
         // User2 can keep their own email
-        $response = $this->actingAs($user2, 'sanctum')->putJson('/api/v1/user', [
+        $response = $this->actingAs($user2, 'sanctum')->putJson('/api/v1/admin/user', [
             'name' => 'User 2 Updated',
             'email' => 'user2@example.com',
         ]);
@@ -230,7 +230,7 @@ class UserControllerTest extends TestCase
 
         $file = UploadedFile::fake()->create('document.pdf', 100);
 
-        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/user', [
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/admin/user', [
             'name' => $user->name,
             'email' => $user->email,
             'avatar' => $file,
@@ -252,7 +252,7 @@ class UserControllerTest extends TestCase
         // Create file larger than 2MB (2048 KB)
         $largeFile = UploadedFile::fake()->image('large.jpg')->size(3000);
 
-        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/user', [
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/admin/user', [
             'name' => $user->name,
             'email' => $user->email,
             'avatar' => $largeFile,
@@ -271,7 +271,7 @@ class UserControllerTest extends TestCase
             'password' => Hash::make('oldpassword'),
         ]);
 
-        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/user/change-password', [
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/admin/user/change-password', [
             'current_password' => 'oldpassword',
             'new_password' => 'newpassword123',
             'new_password_confirmation' => 'newpassword123',
@@ -296,7 +296,7 @@ class UserControllerTest extends TestCase
             'password' => Hash::make('correctpassword'),
         ]);
 
-        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/user/change-password', [
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/admin/user/change-password', [
             'current_password' => 'wrongpassword',
             'new_password' => 'newpassword123',
             'new_password_confirmation' => 'newpassword123',
@@ -318,7 +318,7 @@ class UserControllerTest extends TestCase
             'password' => Hash::make('oldpassword'),
         ]);
 
-        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/user/change-password', [
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/admin/user/change-password', [
             'current_password' => 'oldpassword',
             'new_password' => 'newpassword123',
             'new_password_confirmation' => 'differentpassword',
@@ -337,7 +337,7 @@ class UserControllerTest extends TestCase
             'password' => Hash::make('oldpassword'),
         ]);
 
-        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/user/change-password', [
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/v1/admin/user/change-password', [
             'current_password' => 'oldpassword',
             'new_password' => 'short',
             'new_password_confirmation' => 'short',
@@ -352,7 +352,7 @@ class UserControllerTest extends TestCase
      */
     public function test_unauthenticated_user_cannot_change_password()
     {
-        $response = $this->putJson('/api/v1/user/change-password', [
+        $response = $this->putJson('/api/v1/admin/user/change-password', [
             'current_password' => 'oldpassword',
             'new_password' => 'newpassword123',
             'new_password_confirmation' => 'newpassword123',
@@ -370,7 +370,7 @@ class UserControllerTest extends TestCase
         $user2 = User::factory()->create(['name' => 'User 2']);
 
         // User1 should only see their own data
-        $response = $this->actingAs($user1, 'sanctum')->getJson('/api/v1/user');
+        $response = $this->actingAs($user1, 'sanctum')->getJson('/api/v1/admin/user');
 
         $response->assertStatus(200)
             ->assertJson([
@@ -395,7 +395,7 @@ class UserControllerTest extends TestCase
         $user2 = User::factory()->create(['name' => 'User 2']);
 
         // User1 updates their profile
-        $response = $this->actingAs($user1, 'sanctum')->putJson('/api/v1/user', [
+        $response = $this->actingAs($user1, 'sanctum')->putJson('/api/v1/admin/user', [
             'name' => 'Updated User 1',
             'email' => $user1->email,
         ]);
