@@ -13,25 +13,32 @@ class TeamAuthService
      * Authenticate a user within a team.
      *
      * @param array $data
+     * @param string $teamSlug
      * @return array
      * @throws ValidationException
      */
-    public function login(array $data): array
+    public function login(array $data, string $teamSlug): array
     {
+        $team = Team::where('slug', $teamSlug)->first();
+
+        if (!$team) {
+            throw ValidationException::withMessages([
+                'team' => ['Invalid team identifier.'],
+            ]);
+        }
+
         // Check if user is already authenticated
         if (auth('sanctum')->check()) {
             $user = auth('sanctum')->user();
             if ($user instanceof User && $user->team_id) {
-                $team = Team::find($user->team_id);
-                if ($team && $team->slug === $data['team_slug'] && $user->email === $data['email']) {
+                $existingTeam = Team::find($user->team_id);
+                if ($existingTeam && $existingTeam->slug === $teamSlug && $user->email === $data['email']) {
                     throw ValidationException::withMessages([
                         'email' => [__('auth.already_authenticated')],
                     ]);
                 }
             }
         }
-
-        $team = Team::where('slug', $data['team_slug'])->firstOrFail();
 
         $user = User::where('email', $data['email'])
             ->where('team_id', $team->id)

@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(append: [
             \App\Http\Middleware\SetPermissionsTeamId::class,
         ]);
+
+        $middleware->alias([
+            'verify.team' => \App\Http\Middleware\VerifyTeamHeader::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

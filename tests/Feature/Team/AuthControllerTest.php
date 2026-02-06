@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 use Tests\TestCase;
 
 class AuthControllerTest extends TestCase
@@ -37,11 +37,11 @@ class AuthControllerTest extends TestCase
 
         $owner->update(['team_id' => $team->id]);
 
-        $response = $this->postJson('/api/v1/team/login', [
-            'team_slug' => 'test-team',
-            'email' => 'owner@example.com',
-            'password' => 'password123',
-        ]);
+        $response = $this->withHeaders(['team-slug' => 'test-team'])
+            ->postJson('/api/v1/team/login', [
+                'email' => 'owner@example.com',
+                'password' => 'password123',
+            ]);
 
         $response->assertStatus(200)
             ->assertJsonStructure([
@@ -71,11 +71,11 @@ class AuthControllerTest extends TestCase
 
         $owner->update(['team_id' => $team->id]);
 
-        $response = $this->postJson('/api/v1/team/login', [
-            'team_slug' => 'test-team',
-            'email' => 'owner@example.com',
-            'password' => 'wrong-password',
-        ]);
+        $response = $this->withHeaders(['team-slug' => 'test-team'])
+            ->postJson('/api/v1/team/login', [
+                'email' => 'owner@example.com',
+                'password' => 'wrong-password',
+            ]);
 
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['email']);
@@ -96,14 +96,25 @@ class AuthControllerTest extends TestCase
 
         // User is NOT linked to team
 
+        $response = $this->withHeaders(['team-slug' => 'test-team'])
+            ->postJson('/api/v1/team/login', [
+                'email' => 'user@example.com',
+                'password' => 'password123',
+            ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['email']);
+    }
+
+    public function test_login_fails_if_team_slug_header_missing()
+    {
         $response = $this->postJson('/api/v1/team/login', [
-            'team_slug' => 'test-team',
             'email' => 'user@example.com',
             'password' => 'password123',
         ]);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['email']);
+            ->assertJsonFragment(['message' => 'The team-slug header is required.']);
     }
 
     public function test_team_owner_gets_all_permissions()
@@ -123,6 +134,7 @@ class AuthControllerTest extends TestCase
         $token = $owner->createToken('test')->plainTextToken;
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->withHeaders(['team-slug' => $team->slug])
             ->getJson('/api/v1/team/permissions');
 
         $response->assertStatus(200);
@@ -159,6 +171,7 @@ class AuthControllerTest extends TestCase
         $token = $user->createToken('test')->plainTextToken;
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->withHeaders(['team-slug' => $team->slug])
             ->getJson('/api/v1/team/permissions');
 
         $response->assertStatus(200);

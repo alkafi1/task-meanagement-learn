@@ -38,7 +38,7 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $result = $this->authService->login($request->validated());
+        $result = $this->authService->login($request->validated(), team_slug());
 
         return ApiResponse::success(200, __('messages.login_success'), $result);
     }
