@@ -43,7 +43,6 @@ class SuperAdminUser extends Authenticatable
     protected function casts(): array
     {
         return [
-            'password' => 'hashed',
         ];
     }
 }

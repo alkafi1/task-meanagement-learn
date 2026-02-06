@@ -3,7 +3,10 @@
 namespace App\Services\SuperAdmin;
 
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class TeamService
 {
@@ -25,12 +28,12 @@ class TeamService
      */
     public function createTeam(array $data): Team
     {
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data) {
             // 1. Create the User (Team Owner)
-            $owner = \App\Models\User::create([
+            $owner = User::create([
                 'name' => $data['owner_name'],
                 'email' => $data['owner_email'],
-                'password' => \Illuminate\Support\Facades\Hash::make($data['owner_password']),
+                'password' => Hash::make($data['owner_password']),
             ]);
 
             // 2. Create the Team and assign owner

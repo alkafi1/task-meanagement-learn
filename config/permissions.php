@@ -73,6 +73,52 @@ return [
             'code' => 4001,
             'route' => 'super-admin.permissions.index',
         ],
+
+        // Team Core (Web Guard)
+        'view dashboard' => [
+            'code' => 5001,
+            'route' => 'team.dashboard',
+        ],
+        'manage team' => [
+            'code' => 5002,
+            'route' => 'team.profile',
+        ],
+
+        // Tasks
+        'list tasks' => [
+            'code' => 6001,
+            'route' => 'team.tasks.index',
+        ],
+        'show task' => [
+            'code' => 6002,
+            'route' => 'team.tasks.show',
+        ],
+        'create task' => [
+            'code' => 6003,
+            'route' => 'team.tasks.store',
+        ],
+        'update task' => [
+            'code' => 6004,
+            'route' => 'team.tasks.update',
+        ],
+        'delete task' => [
+            'code' => 6005,
+            'route' => 'team.tasks.destroy',
+        ],
+
+        // Members
+        'list members' => [
+            'code' => 7001,
+            'route' => 'team.members.index',
+        ],
+        'invite member' => [
+            'code' => 7002,
+            'route' => 'team.members.invite',
+        ],
+        'remove member' => [
+            'code' => 7003,
+            'route' => 'team.members.remove',
+        ],
     ],
 
     'guards' => [
@@ -93,6 +139,24 @@ return [
                 'admin' => [
                     'list users', 'show user', 'update user',
                     'list teams', 'show team', 'update team',
+                ],
+            ],
+        ],
+        'team' => [
+            'permissions' => [
+                'view dashboard', 'manage team',
+                'list tasks', 'show task', 'create task', 'update task', 'delete task',
+                'list members', 'invite member', 'remove member',
+            ],
+            'roles' => [
+                'team-admin' => [
+                    'view dashboard', 'manage team',
+                    'list tasks', 'show task', 'create task', 'update task', 'delete task',
+                    'list members', 'invite member', 'remove member',
+                ],
+                'team-member' => [
+                    'view dashboard',
+                    'list tasks', 'show task', 'create task', 'update task',
                 ],
             ],
         ],
