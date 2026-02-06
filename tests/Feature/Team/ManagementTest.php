@@ -39,6 +39,7 @@ class ManagementTest extends TestCase
     public function test_team_owner_can_list_permissions()
     {
         $response = $this->actingAs($this->owner, 'sanctum')
+            ->withHeaders(['team-slug' => $this->team->slug])
             ->getJson('/api/v1/team/roles/permissions');
 
         $response->assertStatus(200)
@@ -57,6 +58,7 @@ class ManagementTest extends TestCase
     public function test_team_owner_can_create_role()
     {
         $response = $this->actingAs($this->owner, 'sanctum')
+            ->withHeaders(['team-slug' => $this->team->slug])
             ->postJson('/api/v1/team/roles', [
                 'name' => 'Developer',
                 'permissions' => ['view dashboard']
@@ -75,6 +77,7 @@ class ManagementTest extends TestCase
         $member = User::factory()->create(['team_id' => $this->team->id]);
 
         $response = $this->actingAs($member, 'sanctum')
+            ->withHeaders(['team-slug' => $this->team->slug])
             ->postJson('/api/v1/team/roles', [
                 'name' => 'Hacker'
             ]);
@@ -98,6 +101,7 @@ class ManagementTest extends TestCase
         ];
 
         $response = $this->actingAs($this->owner, 'sanctum')
+            ->withHeaders(['team-slug' => $this->team->slug])
             ->postJson('/api/v1/team/members', $data);
 
         $response->assertStatus(201);
@@ -119,6 +123,7 @@ class ManagementTest extends TestCase
         $member = User::factory()->create(['team_id' => $this->team->id]);
 
         $response = $this->actingAs($this->owner, 'sanctum')
+            ->withHeaders(['team-slug' => $this->team->slug])
             ->deleteJson("/api/v1/team/members/{$member->id}");
 
         $response->assertStatus(200);
@@ -128,6 +133,7 @@ class ManagementTest extends TestCase
     public function test_cannot_remove_team_owner()
     {
         $response = $this->actingAs($this->owner, 'sanctum')
+            ->withHeaders(['team-slug' => $this->team->slug])
             ->deleteJson("/api/v1/team/members/{$this->owner->id}");
 
         $response->assertStatus(403);

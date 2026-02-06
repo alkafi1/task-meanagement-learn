@@ -34,7 +34,7 @@ class MemberController extends Controller
     public function store(MemberRequest $request): JsonResponse
     {
         $user = auth()->user();
-        $team = Team::find($user->team_id);
+        $team = current_team();
 
         if (!$team || $team->owner_id !== $user->id) {
             return ApiResponse::error(403, 'Only team owners can add members.');
@@ -47,7 +47,7 @@ class MemberController extends Controller
     public function destroy(User $member): JsonResponse
     {
         $authUser = auth()->user();
-        $team = Team::find($authUser->team_id);
+        $team = current_team();
 
         if (!$team || $team->owner_id !== $authUser->id) {
             return ApiResponse::error(403, 'Only team owners can remove members.');

@@ -47,7 +47,7 @@ Route::prefix('v1')->group(function () {
     });
 
     // Team Routes (SaaS)
-    Route::prefix('team')->name('team.')->group(function () {
+    Route::prefix('team')->name('team.')->middleware('verify.team')->group(function () {
         Route::post('/login', [TeamAuthController::class, 'login'])->name('login');
 
         Route::middleware('auth:sanctum')->group(function () {

@@ -38,13 +38,7 @@ class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $teamSlug = $request->header('team-slug');
-
-        if (!$teamSlug) {
-            return ApiResponse::error(422, 'The team-slug header is required.');
-        }
-
-        $result = $this->authService->login($request->validated(), $teamSlug);
+        $result = $this->authService->login($request->validated(), team_slug());
 
         return ApiResponse::success(200, __('messages.login_success'), $result);
     }

@@ -34,7 +34,7 @@ class RoleController extends Controller
     public function store(RoleRequest $request): JsonResponse
     {
         $user = auth()->user();
-        $team = Team::find($user->team_id);
+        $team = current_team();
 
         if (!$team || $team->owner_id !== $user->id) {
             return ApiResponse::error(403, 'Only team owners can create roles.');
@@ -57,7 +57,7 @@ class RoleController extends Controller
     public function update(RoleRequest $request, Role $role): JsonResponse
     {
         $user = auth()->user();
-        $team = Team::find($user->team_id);
+        $team = current_team();
 
         if (!$team || $team->owner_id !== $user->id) {
             return ApiResponse::error(403, 'Only team owners can update roles.');
@@ -74,7 +74,7 @@ class RoleController extends Controller
     public function destroy(Role $role): JsonResponse
     {
         $user = auth()->user();
-        $team = Team::find($user->team_id);
+        $team = current_team();
 
         if (!$team || $team->owner_id !== $user->id) {
             return ApiResponse::error(403, 'Only team owners can delete roles.');

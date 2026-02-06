@@ -134,6 +134,7 @@ class AuthControllerTest extends TestCase
         $token = $owner->createToken('test')->plainTextToken;
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->withHeaders(['team-slug' => $team->slug])
             ->getJson('/api/v1/team/permissions');
 
         $response->assertStatus(200);
@@ -170,6 +171,7 @@ class AuthControllerTest extends TestCase
         $token = $user->createToken('test')->plainTextToken;
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->withHeaders(['team-slug' => $team->slug])
             ->getJson('/api/v1/team/permissions');
 
         $response->assertStatus(200);
