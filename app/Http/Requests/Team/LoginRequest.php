@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\SuperAdmin;
+namespace App\Http\Requests\Team;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class TeamRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,9 @@ class TeamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255', 'unique:teams,slug'],
-            'owner_name' => ['required', 'string', 'max:255'],
-            'owner_email' => ['required', 'email', 'unique:users,email'],
-            'owner_password' => ['required', 'string', 'min:8'],
+            'team_slug' => ['required', 'string', 'exists:teams,slug'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
         ];
     }
 }

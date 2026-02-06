@@ -16,9 +16,18 @@ class UserResource extends JsonResource
     {
         $permissionConfig = config('permissions.codes', []);
 
+        $originalTeamId = getPermissionsTeamId();
+        if ($this->resource instanceof \App\Models\User && $this->team_id) {
+            setPermissionsTeamId($this->team_id);
+        }
+
         $permissions = $this->getAllPermissions()->pluck('name')->map(function ($name) use ($permissionConfig) {
             return $permissionConfig[$name]['code'] ?? $name;
         });
+
+        if ($this->resource instanceof \App\Models\User) {
+            setPermissionsTeamId($originalTeamId);
+        }
 
         // If super-admin, they might have specific codes or all codes
         if ($this->hasRole('super-admin', 'super_admin')) {

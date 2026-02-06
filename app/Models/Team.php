@@ -12,8 +12,20 @@ class Team extends Model
 
     protected $fillable = [
         'name',
+        'slug',
         'owner_id',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($team) {
+            if (!$team->slug) {
+                $team->slug = \Illuminate\Support\Str::slug($team->name) . '-' . \Illuminate\Support\Str::random(5);
+            }
+        });
+    }
 
     /**
      * Get the owner of the team.
