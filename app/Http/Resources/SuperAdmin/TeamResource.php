@@ -17,6 +17,7 @@ class TeamResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'slug' => $this->slug,
             'owner_id' => $this->owner_id ?? null,
             'created_at' => $this->created_at->toIso8601String(),
             'updated_at' => $this->updated_at->toIso8601String(),

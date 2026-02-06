@@ -23,7 +23,10 @@ class TeamRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'owner_id' => ['required', 'exists:users,id'],
+            'slug' => ['nullable', 'string', 'max:255', 'unique:teams,slug'],
+            'owner_name' => ['required', 'string', 'max:255'],
+            'owner_email' => ['required', 'email', 'unique:users,email'],
+            'owner_password' => ['required', 'string', 'min:8'],
         ];
     }
 }

@@ -18,14 +18,40 @@ class TeamService
     }
 
     /**
-     * Create a new team.
+     * Create a new team with an owner.
      *
      * @param array $data
      * @return Team
      */
     public function createTeam(array $data): Team
     {
-        return Team::create($data);
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($data) {
+            // 1. Create the User (Team Owner)
+            $owner = \App\Models\User::create([
+                'name' => $data['owner_name'],
+                'email' => $data['owner_email'],
+                'password' => \Illuminate\Support\Facades\Hash::make($data['owner_password']),
+            ]);
+
+            // 2. Create the Team and assign owner
+            $team = Team::create([
+                'name' => $data['name'],
+                'slug' => $data['slug'] ?? null,
+                'owner_id' => $owner->id,
+            ]);
+
+            // 3. Link user to team
+            $owner->update(['team_id' => $team->id]);
+
+            // 4. Assign 'team-admin' role to owner (Spatie-team-scoped)
+            // Note: We need to define this role in the seeder or sync command later
+            setPermissionsTeamId($team->id);
+
+            // For now, let's just make sure the user is marked as owner
+            // We'll handle custom team roles in a separate step if needed
+
+            return $team;
+        });
     }
 
     /**

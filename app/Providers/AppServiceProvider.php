@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
-            if (method_exists($user, 'hasRole') && $user->hasRole('super-admin', 'super_admin')) {
+            if ($user instanceof \App\Models\SuperAdminUser) {
                 return true;
             }
         });

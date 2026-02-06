@@ -20,9 +20,9 @@ class RoleController extends Controller
         $this->authorizeResource(Role::class, 'role');
     }
 
-    public function index(): JsonResponse
+    public function index(\Illuminate\Http\Request $request): JsonResponse
     {
-        $roles = $this->roleService->getAllRoles();
+        $roles = $this->roleService->getAllRoles($request->query('team_id'));
         return ApiResponse::success(200, __('messages.user_retrieved'), RoleResource::collection($roles));
     }
 

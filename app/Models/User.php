@@ -12,7 +12,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, \Spatie\Permission\Traits\HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -20,6 +20,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'team_id',
         'name',
         'email',
         'password',

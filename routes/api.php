@@ -6,6 +6,7 @@ use App\Http\Controllers\SuperAdmin\AuthController as SuperAdminAuthController;
 use App\Http\Controllers\SuperAdmin\UserController as SuperAdminUserController;
 use App\Http\Controllers\SuperAdmin\TeamController as SuperAdminTeamController;
 use App\Http\Controllers\SuperAdmin\RoleController as SuperAdminRoleController;
+use App\Http\Controllers\TeamAuthController;
 use App\Http\Middleware\SuperAdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,16 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('roles', SuperAdminRoleController::class);
         });
     });
+
+    // Team Routes (SaaS)
+    Route::prefix('team')->name('team.')->group(function () {
+        Route::post('/login', [TeamAuthController::class, 'login'])->name('login');
+
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/logout', [TeamAuthController::class, 'logout'])->name('logout');
+        });
+    });
+
     // Admin Routes
     Route::prefix('admin')->group(function () {
 

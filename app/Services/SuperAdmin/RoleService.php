@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class RoleService
 {
-    public function getAllRoles(): Collection
+    public function getAllRoles(?int $teamId = null): Collection
     {
-        return Role::where('guard_name', 'super_admin')->with('permissions')->get();
+        return Role::where('guard_name', 'super_admin')
+            ->where('team_id', $teamId)
+            ->with('permissions')
+            ->get();
     }
 
     public function createRole(array $data): Role
@@ -17,6 +20,7 @@ class RoleService
         $role = Role::create([
             'name' => $data['name'],
             'guard_name' => 'super_admin',
+            'team_id' => $data['team_id'] ?? null,
         ]);
 
         if (!empty($data['permissions'])) {
